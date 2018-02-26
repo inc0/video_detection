@@ -2,7 +2,7 @@
 version: '3'
 services:
   stream-web:
-    image: "streamapp"
+    build: .
     restart: "always"
     ports:
       - "5000:5000"
@@ -10,14 +10,12 @@ services:
     links:
       - "redis:redis"
   stream-buffer:
-    image: "streamapp"
+    build: .
     command: "python3 webcam.py"
     restart: "always"
-    volumes:
-      - "/dev:/dev"
-      - "/root/streamapp:/streamapp"
-    privileged: true
     links:
       - "redis:redis"
+    environment:
+      - RTSP_ADDRESS=${RTSP_ADDRESS}
   redis:
     image: redis

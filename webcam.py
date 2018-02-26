@@ -1,15 +1,12 @@
 import cv2
-import numpy
-import socket
-from sys import getsizeof
+import os
 import pickle
-import struct
 import time
 import redis
 
 
-
-cap = cv2.VideoCapture('rtsp://192.168.0.107:554/11')
+rtsp_address=os.environ['RTSP_ADDRESS']
+cap = cv2.VideoCapture(rtsp_address)
 r = redis.StrictRedis(host='redis', port=6379, db=0)
 n_frames = 0
 start = time.time()
