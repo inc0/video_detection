@@ -1,7 +1,7 @@
-FROM gcr.io/tensorflow/tensorflow
+FROM tensorflow/tensorflow:latest-py3
 
 RUN apt-get update && apt-get -y install git python-opencv wget protobuf-compiler
-RUN pip install Flask
+RUN pip3 install Flask opencv-python redis ipython
 
 RUN mkdir /mobilenet
 RUN git clone https://github.com/tensorflow/models.git
@@ -15,4 +15,4 @@ WORKDIR /streamapp
 COPY . .
 
 EXPOSE 5000
-CMD python app.py
+CMD python3 app.py

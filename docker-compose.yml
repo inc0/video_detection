@@ -1,0 +1,23 @@
+---
+version: '3'
+services:
+  stream-web:
+    image: "streamapp"
+    restart: "always"
+    ports:
+      - "5000:5000"
+    command: "python3 app.py"
+    links:
+      - "redis:redis"
+  stream-buffer:
+    image: "streamapp"
+    command: "python3 webcam.py"
+    restart: "always"
+    volumes:
+      - "/dev:/dev"
+      - "/root/streamapp:/streamapp"
+    privileged: true
+    links:
+      - "redis:redis"
+  redis:
+    image: redis

@@ -15,6 +15,8 @@ def gen():
     while True:
         n_frames += 1
         frame = get_frame()
+        if not frame:
+            continue
         fps = n_frames / (time.time() - start)
         if n_frames % 10 == 0:
             print(str(fps) + " FPS")

@@ -1,7 +1,9 @@
-import cv2
+import pickle
 import sys
 
+import cv2
 import numpy as np
+import redis
 import tensorflow as tf
 
 sys.path.append(".")
@@ -74,10 +76,10 @@ def run_inference_for_single_image(image, sess, graph):
        output_dict['detection_masks'] = output_dict['detection_masks'][0]
    return output_dict
 
+r = redis.StrictRedis(host='redis', port=6379, db=0)
 
-cap = cv2.VideoCapture(0)
 def get_frame():
-    ret, frame = cap.read()
+    frame = pickle.loads(r.get('img'))
     output_dict = run_inference_for_single_image(frame, sess, detection_graph)
     vis_util.visualize_boxes_and_labels_on_image_array(
         frame,
