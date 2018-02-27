@@ -16,6 +16,6 @@ services:
     links:
       - "redis:redis"
     environment:
-      - RTSP_ADDRESS=${RTSP_ADDRESS}
+      - IP_CAMERA=${IP_CAMERA}
   redis:
     image: redis

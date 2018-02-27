@@ -4,9 +4,8 @@ import pickle
 import time
 import redis
 
-
-rtsp_address=os.environ['RTSP_ADDRESS']
-cap = cv2.VideoCapture(rtsp_address)
+ip_camera=os.environ['IP_CAMERA']
+cap = cv2.VideoCapture('rtsp://' + ip_camera + ':554/11')
 r = redis.StrictRedis(host='redis', port=6379, db=0)
 n_frames = 0
 start = time.time()
