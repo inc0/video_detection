@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webcam
+  labels:
+    app: webcam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webcam
+  template:
+    metadata:
+      labels:
+        app: webcam
+    spec:
+      containers:
+      - name: webcam
+        image: localhost:30500/streamapp:latest
+        imagePullPolicy: Always
+        command: ["/usr/bin/python3", "webcam.py"]
+        env:
+          - name: IP_CAMERA
+            value: "192.168.0.250:554/11"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    run: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
