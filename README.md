@@ -11,12 +11,12 @@ My Edge device is currently running Fedora 27, with the following versions of th
 
 We use IP cameras from [SV3C](http://www.sv3c.com/), more specifically the POE models (that can do 1080p): http://www.sv3c.com/POE-IP-Camera.html
 
-## Building the docker image
+## Getting ready
 1. Clone this repository locally: `git clone https://github.com/inc0/video_detection`
 2. Make sure [Docker](https://www.docker.com/) is running: `sudo systemctl start docker`
-3. Build the Docker image: `cd video_detection && docker build -t streamapp .`
+3. Put yourself in the cloned folder: `cd video_detection`
 
-**Note:** you need to use `streamapp` as the name of the Docker container you are building as it is used in the [`docker-compose.yml`](./docker-compose.yml) file
+**Note:** you do not need to need to build any Docker container. It will be built automatically for you if not yet available. See the `build` instruction in the [`docker-compose.yml`](./docker-compose.yml) file.
 
 ## Running the Object Detection on the Edge device
 *Note:* unless you have installed Docker and performed [these post-installation steps](https://docs.docker.com/install/linux/linux-postinstall/), you will need to use `sudo` to use `docker-compose`. For some reason, it does not find the `docker-compose` executable and I have to use the full path to it, i.e. `sudo /usr/local/bin/docker-compose up` (to be investigated later, or maybe a reboot will solve it).
