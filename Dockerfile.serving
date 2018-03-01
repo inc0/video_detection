@@ -1,0 +1,8 @@
+FROM gcr.io/kubeflow-images-staging/tf-model-server:v20180227-master
+
+RUN apt-get update && apt-get -y install protobuf-compiler wget
+
+RUN mkdir /mobilenet
+RUN wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz && \
+    tar -xvzf ssd_mobilenet_v1_coco_2017_11_17.tar.gz -C /mobilenet
+

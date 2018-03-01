@@ -1,0 +1,7 @@
+FROM gcr.io/kubeflow/tensorflow-notebook-cpu:latest
+
+USER root
+RUN apt-get update && apt-get -y install git python-opencv wget protobuf-compiler
+RUN cd /home/jovyan/tensorflow-models/research && protoc object_detection/protos/*.proto --python_out=.
+RUN pip install Flask opencv-python redis ipython
+

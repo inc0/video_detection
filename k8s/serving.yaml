@@ -1,0 +1,91 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-video
+  labels:
+    jupyterUser: video
+    volumeRole: work
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  flexVolume:
+    driver: rook.io/rook
+    fsType: ceph
+    options:
+      fsName: myfs
+      clusterName: rook
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: jupyterhub
+    heritage: jupyterhub
+    hub.jupyter.org/username: video
+  name: claim-video
+  namespace: default
+spec:
+  storageClassName: ""
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      jupyterUser: video
+      volumeRole: work
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serving
+  labels:
+    app: serving
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: serving
+  template:
+    metadata:
+      labels:
+        app: serving
+    spec:
+      containers:
+      - name: serving
+        image: localhost:30500/serving:latest
+        imagePullPolicy: Always
+        command: ['tensorflow_model_server',
+                  '--model_base_path=/work/exported',
+                  '--model_name=video']
+        ports:
+          - containerPort: 8500
+        volumeMounts:
+          - mountPath: /work
+            name: volume-video
+      volumes:
+        - name: volume-video
+          persistentVolumeClaim:
+            claimName: claim-video
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: serving
+  labels:
+    run: serving
+spec:
+  ports:
+  - port: 8500
+    protocol: TCP
+    targetPort: 8500
+  selector:
+    app: serving
+  type: NodePort
