@@ -31,3 +31,35 @@ sudo IP_CAMERA=192.168.0.130 /usr/local/bin/docker-compose up
 ```
 4. Open a broswer at http://0.0.0.0:5000 to see the results
 
+# Notes about running on Clear Linux
+
+It is possible to run the same set-up on Clear Linux. Unfortunately, it is **not** possible to use Clear Containers for this yet (a bug has yet to be filed).
+
+## Prerequisites
+Same as for Fedora 27 (or any other OS really), install [Docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/overview/). Use the following guides to help you:
+* [Installing Clear Containers 3.0 on Clear Linux](https://github.com/clearcontainers/runtime/blob/master/docs/clearlinux-installation-guide.md)
+* Install `docker-compose`:
+```
+$ sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
+$ sudo chmod +x /usr/bin/docker-compose
+```
+
+Because of the current issue with Clear Containers 3, we have to change the default behaviour of Docker when running in Clear Linux (bare metal). The background is that, by default, it will pick the Clear Containers 3 runtime (`cc-runtime`) when running bare-metal so we need to force the system to **not** do that.
+
+One way to achieve this (not sure whether it's the best way) is to modify the `docker.service` file (`/lib/systemd/system/docker.service`) and change the `ExecStart` line to this:
+```
+ExecStart=/usr/bin/dockerd --storage-driver=overlay2 --default-runtime=runc
+```
+
+Now reload and restart the daemon:
+```
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart docker
+```
+
+Verify that the `runc` runtime is being used:
+```
+sudo docker info | grep Run
+```
+
+You are now ready to continue from [Running the Object Detection on the Edge device](#running-the-object-detection-on-the-edge-device)
